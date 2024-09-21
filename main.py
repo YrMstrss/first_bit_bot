@@ -19,4 +19,17 @@ def start(message):
     bot.send_message(message.chat.id, "Нажми на кнопку 'Поехали!' для начала", reply_markup=markup)
 
 
+@bot.callback_query_handler(func=lambda call: True)
+def callback_start(call):
+    try:
+        if call.message:
+            bot.send_message(call.message.chat.id, 'Полное имя:')
+
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text="Нажми на кнопку 'Поехали!' для начала", reply_markup=None)
+
+    except Exception as e:
+        print(repr(e))
+
+
 bot.polling(non_stop=True, interval=0)
