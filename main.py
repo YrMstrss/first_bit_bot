@@ -100,7 +100,7 @@ def end_survey(message):
                      f'\nПолная занятость (5/2): {candidates[message.chat.id]['full_time']}')
     bot.send_message(message.chat.id,
                      'Для отбора на вакансию необходимо пройти тест по ссылке\n '
-                     'https://docs.google.com/forms/d/e/1FAIpQLSfVsxxSKtgamgQYtLwEXPXvZxpfD4cglxatC75WKJnf3WXidA'
+                     'http://form-timer.com/start/aa88663a'
                      '/viewform?usp=sharing.'
                      '\nНа тест дается 30 минут, необходимо набрать 25 баллов и более для дальнейшего взаимодействия')
 
