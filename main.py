@@ -128,5 +128,7 @@ def end_survey(message):
          candidates[message.chat.id]['course'], candidates[message.chat.id]['full_time'],
          candidates[message.chat.id]['prog_lang']])
 
+    del candidates[message.chat.id]
+
 
 bot.polling(non_stop=True, interval=0)
