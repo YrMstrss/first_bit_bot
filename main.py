@@ -30,7 +30,7 @@ def callback_start(call):
         if call.message:
             if call.data == 'go':
                 bot.send_message(call.message.chat.id, 'ФИО:')
-                bot.register_next_step_handler(call.message, ask_prog_lang)
+                bot.register_next_step_handler(call.message, ask_phone)
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text=call.message.text, reply_markup=None)
@@ -39,21 +39,20 @@ def callback_start(call):
         print(repr(e))
 
 
-def ask_prog_lang(message):
+def ask_phone(message):
     candidates[message.chat.id]['name'] = message.text
+    bot.send_message(message.chat.id, 'Введи свой номер телефона:')
+    bot.register_next_step_handler(message, ask_city)
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    item_1 = types.KeyboardButton("Да")
-    item_2 = types.KeyboardButton("Нет")
-    markup.add(item_1, item_2)
 
-    bot.send_message(message.chat.id, 'Знаешь ли ты какой-то язык программирования на базовом уровне?',
-                     reply_markup=markup)
+def ask_city(message):
+    candidates[message.chat.id]['phone'] = message.text
+    bot.send_message(message.chat.id, 'В каком городе живешь?')
     bot.register_next_step_handler(message, ask_does_work)
 
 
 def ask_does_work(message):
-    candidates[message.chat.id]['prog_lang'] = message.text
+    candidates[message.chat.id]['city'] = message.text
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item_1 = types.KeyboardButton("Работаю")
@@ -87,22 +86,38 @@ def ask_full_time(message):
     markup.add(item_1, item_2)
 
     bot.send_message(message.chat.id, 'Можешь работать 5/2?', reply_markup=markup)
+    bot.register_next_step_handler(message, ask_prog_lang)
+
+
+def ask_prog_lang(message):
+    candidates[message.chat.id]['full_time'] = message.text
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    item_1 = types.KeyboardButton("Да")
+    item_2 = types.KeyboardButton("Нет")
+    markup.add(item_1, item_2)
+
+    bot.send_message(message.chat.id, 'Знаешь ли ты какой-то язык программирования на базовом уровне?',
+                     reply_markup=markup)
+
     bot.register_next_step_handler(message, end_survey)
 
 
 def end_survey(message):
-    candidates[message.chat.id]['full_time'] = message.text
-    bot.send_message(message.chat.id,
-                     f'Твоя информация:\nИмя: {candidates[message.chat.id]['name']}'
-                     f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]['prog_lang']}'
-                     f'\nРаботаешь/учишься: {candidates[message.chat.id]['does_work']}'
-                     f'\nНа каком курсе: {candidates[message.chat.id]['course']}'
-                     f'\nПолная занятость (5/2): {candidates[message.chat.id]['full_time']}')
+    candidates[message.chat.id]['prog_lang'] = message.text
     bot.send_message(message.chat.id,
                      'Для отбора на вакансию необходимо пройти тест по ссылке\n '
                      'http://form-timer.com/start/aa88663a'
-                     '/viewform?usp=sharing.'
                      '\nНа тест дается 30 минут, необходимо набрать 25 баллов и более для дальнейшего взаимодействия')
+    bot.send_message(message.chat.id,
+                     f'Твоя информация:\nИмя: {candidates[message.chat.id]['name']}'
+                     f'\nНомер телефона: {candidates[message.chat.id]['phone']}'
+                     f'\nГород: {candidates[message.chat.id]['city']}'
+                     f'\nРаботаешь/учишься: {candidates[message.chat.id]['does_work']}'
+                     f'\nНа каком курсе: {candidates[message.chat.id]['course']}'
+                     f'\nПолная занятость (5/2): {candidates[message.chat.id]['full_time']}'
+                     f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]['prog_lang']}'
+                     )
 
 
 bot.polling(non_stop=True, interval=0)
