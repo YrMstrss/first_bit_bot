@@ -1,4 +1,6 @@
 import os
+
+import gspread
 from telebot import TeleBot, types
 from dotenv import load_dotenv
 
@@ -8,6 +10,9 @@ TOKEN = os.getenv('TG_BOT_KEY')
 bot = TeleBot(TOKEN)
 
 candidates = {}
+
+gc = gspread.service_account(filename='trans-century-436516-n6-fdde641b68dc.json')
+sh = gc.open("Кандидаты").sheet1
 
 
 @bot.message_handler(commands=['start', ])
@@ -75,9 +80,7 @@ def ask_course(message):
 
 
 def ask_full_time(message):
-    try:
-        candidates[message.chat.id]['course'] = message.text
-    except AttributeError:
+    if message.text == 'Работаю' or message.text == 'Нет':
         candidates[message.chat.id]['course'] = '-'
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -118,6 +121,12 @@ def end_survey(message):
                      f'\nПолная занятость (5/2): {candidates[message.chat.id]['full_time']}'
                      f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]['prog_lang']}'
                      )
+
+    sh.append_row(
+        [message.chat.id, candidates[message.chat.id]['name'], candidates[message.chat.id]['phone'],
+         candidates[message.chat.id]['city'], candidates[message.chat.id]['does_work'],
+         candidates[message.chat.id]['course'], candidates[message.chat.id]['full_time'],
+         candidates[message.chat.id]['prog_lang']])
 
 
 bot.polling(non_stop=True, interval=0)
