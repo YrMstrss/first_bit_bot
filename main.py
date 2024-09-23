@@ -79,7 +79,7 @@ def ask_full_time(message):
     try:
         candidates[message.chat.id]['course'] = message.text
     except AttributeError:
-        candidates[message.chat.id]['course'] = None
+        candidates[message.chat.id]['course'] = '-'
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item_1 = types.KeyboardButton("Да")
