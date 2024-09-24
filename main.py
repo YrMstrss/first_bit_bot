@@ -110,16 +110,16 @@ def end_survey(message):
     candidates[message.chat.id]['prog_lang'] = message.text
     bot.send_message(message.chat.id,
                      'Для отбора на вакансию необходимо пройти тест по ссылке\n '
-                     'http://form-timer.com/start/aa88663a'
+                     'http://form-timer.com/start/884eee8a'
                      '\nНа тест дается 30 минут, необходимо набрать 25 баллов и более для дальнейшего взаимодействия')
     bot.send_message(message.chat.id,
-                     f'Твоя информация:\nИмя: {candidates[message.chat.id]['name']}'
-                     f'\nНомер телефона: {candidates[message.chat.id]['phone']}'
-                     f'\nГород: {candidates[message.chat.id]['city']}'
-                     f'\nРаботаешь/учишься: {candidates[message.chat.id]['does_work']}'
-                     f'\nНа каком курсе: {candidates[message.chat.id]['course']}'
-                     f'\nПолная занятость (5/2): {candidates[message.chat.id]['full_time']}'
-                     f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]['prog_lang']}'
+                     f'Твоя информация:\nИмя: {candidates[message.chat.id]["name"]}'
+                     f'\nНомер телефона: {candidates[message.chat.id]["phone"]}'
+                     f'\nГород: {candidates[message.chat.id]["city"]}'
+                     f'\nРаботаешь/учишься: {candidates[message.chat.id]["does_work"]}'
+                     f'\nНа каком курсе: {candidates[message.chat.id]["course"]}'
+                     f'\nПолная занятость (5/2): {candidates[message.chat.id]["full_time"]}'
+                     f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]["prog_lang"]}'
                      )
 
     sh.append_row(
