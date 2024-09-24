@@ -109,10 +109,6 @@ def ask_prog_lang(message):
 def end_survey(message):
     candidates[message.chat.id]['prog_lang'] = message.text
     bot.send_message(message.chat.id,
-                     'Для отбора на вакансию необходимо пройти тест по ссылке\n '
-                     'http://form-timer.com/start/884eee8a'
-                     '\nНа тест дается 30 минут, необходимо набрать 25 баллов и более для дальнейшего взаимодействия')
-    bot.send_message(message.chat.id,
                      f'Твоя информация:\nИмя: {candidates[message.chat.id]["name"]}'
                      f'\nНомер телефона: {candidates[message.chat.id]["phone"]}'
                      f'\nГород: {candidates[message.chat.id]["city"]}'
@@ -129,6 +125,24 @@ def end_survey(message):
          candidates[message.chat.id]['prog_lang']])
 
     del candidates[message.chat.id]
+
+    bot.send_message(message.chat.id,
+                     'Для отбора на вакансию необходимо пройти тест по ссылке\n '
+                     'http://form-timer.com/start/884eee8a'
+                     '\nНа тест дается 30 минут, необходимо набрать 25 баллов и более для дальнейшего взаимодействия')
+
+    bot.send_message(message.chat.id, f'В тесте необходимо будет указать твой ID. Вот он: {message.chat.id}')
+
+    bot.send_message(message.chat.id, 'После прохождения теста воспользуйтесь командой /results. Результаты '
+                                      'могут обновиться не сразу, если результата нет, попробуйте позже')
+
+
+@bot.message_handler(commands=['result', ])
+def get_result(message):
+    ids = sh.col_values(1)
+    row = ids.index(str(message.chat.id)) + 1
+    result = sh.cell(row, 9).value
+    bot.send_message(message.chat.id, f'Ваш результат: {result}')
 
 
 bot.polling(non_stop=True, interval=0)
