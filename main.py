@@ -141,7 +141,7 @@ def end_survey(message):
 
     bot.send_message(message.chat.id, f'В тесте необходимо будет указать твой ID. Вот он: {message.chat.id}')
 
-    bot.send_message(message.chat.id, 'После прохождения теста воспользуйтесь командой /results. Результаты '
+    bot.send_message(message.chat.id, 'После прохождения теста воспользуйтесь командой /result. Результаты '
                                       'могут обновиться не сразу, если результата нет, попробуйте позже')
 
 
@@ -149,6 +149,9 @@ def end_survey(message):
 def get_result(message):
     ids = sh.col_values(1)
     row = ids.index(str(message.chat.id)) + 1
+    sh.update(values=[[
+        f"=ИНДЕКС('Ответы на форму (2)'!$B$2:$G$1000;ПОИСКПОЗ(A{row};Form_Responses1[Ваш id (отправлен ТГ-ботом)];0);1)",]],
+        range_name=f'I{row}', raw=False)
     result = sh.cell(row, 9).value
     bot.send_message(message.chat.id, f'Ваш результат: {result}')
 
