@@ -148,7 +148,12 @@ def end_survey(message):
 @bot.message_handler(commands=['result', ])
 def get_result(message):
     ids = sh.col_values(1)
-    row = ids.index(str(message.chat.id)) + 1
+    try:
+        row = ids.index(str(message.chat.id)) + 1
+    except ValueError:
+        bot.send_message(message.chat.id, 'Вашего результата нет. Кажется какая-то ошибка')
+        return None
+
     sh.update(values=[[
         f"=ИНДЕКС('Ответы на форму (2)'!$B$2:$G$1000;ПОИСКПОЗ(A{row};Form_Responses1[Ваш id (отправлен ТГ-ботом)];0);1)",]],
         range_name=f'I{row}', raw=False)
