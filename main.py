@@ -108,21 +108,27 @@ def ask_prog_lang(message):
 
 def end_survey(message):
     candidates[message.chat.id]['prog_lang'] = message.text
+    candidate_data = [message.chat.id, candidates[message.chat.id]['name'], candidates[message.chat.id]['phone'],
+                      candidates[message.chat.id]['city'], candidates[message.chat.id]['does_work'],
+                      candidates[message.chat.id]['course'], candidates[message.chat.id]['full_time'],
+                      candidates[message.chat.id]['prog_lang']]
+
     bot.send_message(message.chat.id,
-                     f'Твоя информация:\nИмя: {candidates[message.chat.id]["name"]}'
-                     f'\nНомер телефона: {candidates[message.chat.id]["phone"]}'
-                     f'\nГород: {candidates[message.chat.id]["city"]}'
-                     f'\nРаботаешь/учишься: {candidates[message.chat.id]["does_work"]}'
-                     f'\nНа каком курсе: {candidates[message.chat.id]["course"]}'
-                     f'\nПолная занятость (5/2): {candidates[message.chat.id]["full_time"]}'
-                     f'\nЗнаешь ли язык программирования: {candidates[message.chat.id]["prog_lang"]}'
+                     f'Твоя информация:\nИмя: {candidate_data[0]}'
+                     f'\nНомер телефона: {candidate_data[1]}'
+                     f'\nГород: {candidate_data[2]}'
+                     f'\nРаботаешь/учишься: {candidate_data[3]}'
+                     f'\nНа каком курсе: {candidate_data[4]}'
+                     f'\nПолная занятость (5/2): {candidate_data[5]}'
+                     f'\nЗнаешь ли язык программирования: {candidate_data[6]}'
                      )
 
-    sh.append_row(
-        [message.chat.id, candidates[message.chat.id]['name'], candidates[message.chat.id]['phone'],
-         candidates[message.chat.id]['city'], candidates[message.chat.id]['does_work'],
-         candidates[message.chat.id]['course'], candidates[message.chat.id]['full_time'],
-         candidates[message.chat.id]['prog_lang']])
+    ids = sh.col_values(1)
+    if message.chat.id not in ids:
+        sh.append_row(candidate_data)
+    else:
+        row = ids.index(str(message.chat.id)) + 1
+        sh.update(f'A{row}', candidate_data)
 
     del candidates[message.chat.id]
 
