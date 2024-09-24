@@ -82,6 +82,8 @@ def ask_course(message):
 def ask_full_time(message):
     if message.text == 'Работаю' or message.text == 'Нет':
         candidates[message.chat.id]['course'] = '-'
+    else:
+        candidates[message.chat.id]['course'] = message.text
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item_1 = types.KeyboardButton("Да")
@@ -114,21 +116,21 @@ def end_survey(message):
                       candidates[message.chat.id]['prog_lang']]
 
     bot.send_message(message.chat.id,
-                     f'Твоя информация:\nИмя: {candidate_data[0]}'
-                     f'\nНомер телефона: {candidate_data[1]}'
-                     f'\nГород: {candidate_data[2]}'
-                     f'\nРаботаешь/учишься: {candidate_data[3]}'
-                     f'\nНа каком курсе: {candidate_data[4]}'
-                     f'\nПолная занятость (5/2): {candidate_data[5]}'
-                     f'\nЗнаешь ли язык программирования: {candidate_data[6]}'
+                     f'Твоя информация:\nИмя: {candidate_data[1]}'
+                     f'\nНомер телефона: {candidate_data[2]}'
+                     f'\nГород: {candidate_data[3]}'
+                     f'\nРаботаешь/учишься: {candidate_data[4]}'
+                     f'\nНа каком курсе: {candidate_data[5]}'
+                     f'\nПолная занятость (5/2): {candidate_data[6]}'
+                     f'\nЗнаешь ли язык программирования: {candidate_data[7]}'
                      )
 
     ids = sh.col_values(1)
-    if message.chat.id not in ids:
+    if str(message.chat.id) not in ids:
         sh.append_row(candidate_data)
     else:
         row = ids.index(str(message.chat.id)) + 1
-        sh.update(f'A{row}', candidate_data)
+        sh.update(values=[candidate_data], range_name=f'A{row}')
 
     del candidates[message.chat.id]
 
